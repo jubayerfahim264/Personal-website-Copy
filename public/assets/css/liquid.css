@@ -1,0 +1,128 @@
+.liquid-background {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: rgba(10, 25, 47, 0.85);
+}
+
+.liquid-shape {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    filter: blur(150px);
+    border-radius: 100px;
+}
+
+.liquid-shape:nth-child(1) {
+    background: linear-gradient(45deg, #4158d0, #c850c0);
+    top: -20%;
+    left: -10%;
+    animation: float1 25s ease-in-out infinite;
+}
+
+.liquid-shape:nth-child(2) {
+    background: linear-gradient(45deg, #c850c0, #ffcc70);
+    bottom: -20%;
+    right: -10%;
+    animation: float2 30s ease-in-out infinite;
+}
+
+.liquid-shape:nth-child(3) {
+    background: linear-gradient(45deg, #4158d0, #ffcc70);
+    bottom: 30%;
+    left: 30%;
+    animation: float3 20s ease-in-out infinite;
+}
+
+@keyframes float1 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    25% {
+        transform: translate(15%, 15%) rotate(90deg);
+    }
+
+    50% {
+        transform: translate(5%, 25%) rotate(180deg);
+    }
+
+    75% {
+        transform: translate(15%, 10%) rotate(270deg);
+    }
+}
+
+@keyframes float2 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    25% {
+        transform: translate(-15%, -15%) rotate(-90deg);
+    }
+
+    50% {
+        transform: translate(-5%, -25%) rotate(-180deg);
+    }
+
+    75% {
+        transform: translate(-15%, -10%) rotate(-270deg);
+    }
+}
+
+@keyframes float3 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(5%, 5%) scale(1.1);
+    }
+
+    50% {
+        transform: translate(10%, -5%) scale(1);
+    }
+
+    75% {
+        transform: translate(-5%, 10%) scale(0.9);
+    }
+}
+
+/* Add backdrop filter to sections to enhance visibility */
+.section_70,
+.banner,
+.navbar {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 10px;
+    margin: 10px;
+}
+
+/* Make the main navbar frosted, readable and sticky */
+.navbar {
+    position: sticky; /* stick to top when scrolling */
+    top: 0;
+    z-index: 9999; /* stay above most page content */
+    background: rgba(6, 12, 28, 0.443); /* subtle dark glass */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 6px 20px rgba(2, 6, 23, 0.35);
+    transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+}
+
+h2.theme-after.dark-color {
+    color: white;
+}

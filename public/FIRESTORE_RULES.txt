@@ -1,0 +1,105 @@
+/**
+ * Firestore Security Rules for Contact Form
+ * 
+ * Copy and paste these rules into your Firestore Database "Rules" tab
+ * 
+ * Instructions:
+ * 1. Go to Firebase Console → Firestore Database → Rules
+ * 2. Select all and delete existing rules
+ * 3. Copy-paste the rules below
+ * 4. Click "Publish"
+ */
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===== CONTACT MESSAGES COLLECTION =====
+    // Rules for the contact_messages collection used by the contact form
+    
+    match /contact_messages/{document=**} {
+      // Allow anyone (unauthenticated or authenticated) to create new messages
+      // But ensure required fields are present and valid
+      allow create: if 
+        request.resource.data.keys().hasAll(['name', 'email', 'subject', 'message'])
+        && request.resource.data.name is string 
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() < 100
+        && request.resource.data.email is string 
+        && request.resource.data.email.size() > 0
+        && request.resource.data.email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')
+        && request.resource.data.subject is string 
+        && request.resource.data.subject.size() > 0
+        && request.resource.data.subject.size() < 200
+        && request.resource.data.message is string 
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() < 5000
+        && request.resource.data.timestamp is timestamp
+        && request.resource.data.status is string
+        && request.resource.data.status in ['new', 'read', 'responded'];
+      
+      // Only allow reads to admin users (optional - comment out if not needed)
+      // allow read: if request.auth != null && request.auth.token.admin == true;
+      
+      // Prevent all other operations (read, update, delete)
+      allow read, update, delete: if false;
+    }
+    
+    // ===== DENY ALL OTHER ACCESS =====
+    // Default rule: deny everything not explicitly allowed above
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+/**
+ * ALTERNATIVE RULES FOR AUTHENTICATED USERS ONLY
+ * 
+ * If you want only authenticated users to submit forms:
+ * 
+ * rules_version = '2';
+ * service cloud.firestore {
+ *   match /databases/{database}/documents {
+ *     match /contact_messages/{document=**} {
+ *       allow create: if request.auth != null
+ *         && request.resource.data.name is string
+ *         && request.resource.data.email is string
+ *         && request.resource.data.subject is string
+ *         && request.resource.data.message is string;
+ *       
+ *       allow read, update, delete: if false;
+ *     }
+ *     
+ *     match /{document=**} {
+ *       allow read, write: if false;
+ *     }
+ *   }
+ * }
+ */
+
+/**
+ * RULE EXPLANATION:
+ * 
+ * 1. request.resource.data.keys().hasAll([...])
+ *    - Ensures all required fields are present
+ * 
+ * 2. field is string
+ *    - Validates field type is string
+ * 
+ * 3. field.size() > 0
+ *    - Ensures field is not empty
+ * 
+ * 4. field.size() < limit
+ *    - Prevents extremely long inputs (spam protection)
+ * 
+ * 5. email.matches('^[a-zA-Z0-9...]$')
+ *    - Validates email format using regex
+ * 
+ * 6. allow create: ... / allow read, update, delete: if false
+ *    - Only allows creating new messages
+ *    - Prevents reading, modifying, or deleting messages
+ * 
+ * 7. match /{document=**} { allow read, write: if false; }
+ *    - Default deny rule for all other collections
+ */
